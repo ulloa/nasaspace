@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Linq;
 
 public class GameLogic : MonoBehaviour
 {
     public GameObject BaseTile;
     public GameObject Player;
-    public float PlayerRadius { get; set; }
-    private GameObject currentTile { get; set; }
-    private GameObject nextTile { get; set; }
+    private float PlayerRadius = 10f;
+    public GameObject CurrentTile;
+    public GameObject NextTile;
+    public GameObject OldTile;
 
     void Start()
     {
@@ -22,34 +23,56 @@ public class GameLogic : MonoBehaviour
 
     void LateUpdate()
     {
-        CheckBoundary(Player.transform.position);
+        CheckBoundary();
     }
 
-    public void CheckBoundary(Vector3 curPos)
+    private void OnDrawGizmosSelected()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(curPos, PlayerRadius, 8);
+        Gizmos.color = Color.black;
+        //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
+        Gizmos.DrawWireSphere(Player.transform.position, PlayerRadius);
+    }
 
-        foreach (var collider in hitColliders)
+    public void CheckBoundary()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(Player.transform.position, PlayerRadius);
+
+        var collider = hitColliders.FirstOrDefault(x => x.GetComponent<Tile>() != null && x.gameObject != CurrentTile);
+        if (collider != null)
         {
-            if (collider.GetComponent<Tile>() != null)
-            {
-                nextTile = collider.gameObject;
-                break;
-            }
+            NextTile = collider.gameObject;
+        }
+
+        hitColliders = Physics.OverlapSphere(Player.transform.position, PlayerRadius);
+        collider = hitColliders.FirstOrDefault(x => x.gameObject == CurrentTile);
+        if (collider == null)
+        {
+            OldTile = CurrentTile;
+            CurrentTile = NextTile;
+            NextTile = null;
         }
     }
 
     public void CreateMap(int tileCount, Vector3 startPosition)
     {
-        currentTile = (GameObject)Instantiate(BaseTile, startPosition, Quaternion.Euler(0, 0, 0));
-        Instantiate(Player, startPosition, Quaternion.Euler(0, 0, 0));
-        Instantiate(BaseTile, new Vector3(currentTile.transform.localScale.x, 0, currentTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
-        Instantiate(BaseTile, new Vector3(currentTile.transform.localScale.x, 0, 0), Quaternion.Euler(0, 0, 0));
-        Instantiate(BaseTile, new Vector3(-currentTile.transform.localScale.x, 0, 0), Quaternion.Euler(0, 0, 0));
-        Instantiate(BaseTile, new Vector3(0, 0, currentTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
-        Instantiate(BaseTile, new Vector3(0, 0, -currentTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
-        Instantiate(BaseTile, new Vector3(-currentTile.transform.localScale.x, 0, currentTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
-        Instantiate(BaseTile, new Vector3(currentTile.transform.localScale.x, 0, -currentTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
-        Instantiate(BaseTile, new Vector3(-currentTile.transform.localScale.x, 0, -currentTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
+        var clone = CurrentTile = (GameObject)Instantiate(BaseTile, startPosition, Quaternion.Euler(0, 0, 0));
+        clone.name = "tile" + 1;
+        Player = (GameObject)Instantiate(Player, startPosition, Quaternion.Euler(0, 0, 0));
+        clone = (GameObject)Instantiate(BaseTile, new Vector3(CurrentTile.transform.localScale.x, 0, CurrentTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
+        clone.name = "tile" + 2;
+        clone = (GameObject)Instantiate(BaseTile, new Vector3(CurrentTile.transform.localScale.x, 0, 0), Quaternion.Euler(0, 0, 0));
+        clone.name = "tile" + 3;
+        clone = (GameObject)Instantiate(BaseTile, new Vector3(-CurrentTile.transform.localScale.x, 0, 0), Quaternion.Euler(0, 0, 0));
+        clone.name = "tile" + 4;
+        clone = (GameObject)Instantiate(BaseTile, new Vector3(0, 0, CurrentTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
+        clone.name = "tile" + 5;
+        clone = (GameObject)Instantiate(BaseTile, new Vector3(0, 0, -CurrentTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
+        clone.name = "tile" + 6;
+        clone = (GameObject)Instantiate(BaseTile, new Vector3(-CurrentTile.transform.localScale.x, 0, CurrentTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
+        clone.name = "tile" + 7;
+        clone = (GameObject)Instantiate(BaseTile, new Vector3(CurrentTile.transform.localScale.x, 0, -CurrentTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
+        clone.name = "tile" + 8;
+        clone = (GameObject)Instantiate(BaseTile, new Vector3(-CurrentTile.transform.localScale.x, 0, -CurrentTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
+        clone.name = "tile" + 9;
     }
 }

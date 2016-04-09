@@ -156,7 +156,7 @@ GameObject:
   - 4: {fileID: 624501905}
   - 114: {fileID: 624501904}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: ParentController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
