@@ -6,8 +6,8 @@ public class GameLogic : MonoBehaviour
     public GameObject BaseTile;
     public GameObject Player;
     private float PlayerRadius = 10f;
-    public GameObject CurrentTile;
     public GameObject NextTile;
+    public GameObject CurrentTile;
     public GameObject OldTile;
 
     void Start()
@@ -35,15 +35,15 @@ public class GameLogic : MonoBehaviour
 
     public void CheckBoundary()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(Player.transform.position, PlayerRadius);
+        Collider[] hitColliders = Physics.OverlapSphere(Player.transform.position, PlayerRadius, 256);
 
-        var collider = hitColliders.FirstOrDefault(x => x.GetComponent<Tile>() != null && x.gameObject != CurrentTile);
+        var collider = hitColliders.FirstOrDefault(x => x.gameObject != CurrentTile);
         if (collider != null)
         {
             NextTile = collider.gameObject;
         }
 
-        hitColliders = Physics.OverlapSphere(Player.transform.position, PlayerRadius);
+        hitColliders = Physics.OverlapSphere(Player.transform.position, PlayerRadius, 256);
         collider = hitColliders.FirstOrDefault(x => x.gameObject == CurrentTile);
         if (collider == null)
         {
