@@ -9,6 +9,7 @@ public class GameLogic : MonoBehaviour
     public GameObject NextTile;
     public GameObject CurrentTile;
     public GameObject OldTile;
+    public GameObject MiniMapCam;
 
     void Start()
     {
@@ -23,6 +24,7 @@ public class GameLogic : MonoBehaviour
 
     void LateUpdate()
     {
+        MiniMapCam.transform.position = new Vector3(Player.transform.position.x, MiniMapCam.transform.position.y, Player.transform.position.z);
         CheckBoundary();
     }
 
