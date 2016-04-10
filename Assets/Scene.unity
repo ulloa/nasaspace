@@ -200,6 +200,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1357782582}
   - 20: {fileID: 1357782581}
+  - 114: {fileID: 1357782583}
   m_Layer: 0
   m_Name: MiniMapCamera
   m_TagString: Untagged
@@ -219,21 +220,21 @@ Camera:
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0.019607844}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.85
-    y: 0.7
-    width: 0.3
-    height: 0.7
+    x: 0
+    y: 0
+    width: 1
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 65
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967256
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: e6e3b8ced8497a34da958e65f96ee0b2, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -253,3 +254,16 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
+--- !u!114 &1357782583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1357782580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a4440184994f9748afac19993e9712b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  miniMapTexture: {fileID: 8400000, guid: e6e3b8ced8497a34da958e65f96ee0b2, type: 2}
+  miniMapMaterial: {fileID: 2100000, guid: 729ba4ab80dde474a8fc25c59b60f6df, type: 2}
