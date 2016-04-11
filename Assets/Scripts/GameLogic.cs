@@ -25,6 +25,7 @@ public class GameLogic : MonoBehaviour
     void LateUpdate()
     {
         MiniMapCam.transform.position = new Vector3(Player.transform.position.x, MiniMapCam.transform.position.y, Player.transform.position.z);
+        MiniMapCam.transform.eulerAngles = new Vector3(MiniMapCam.transform.eulerAngles.x, Player.GetComponentInChildren<Camera>().transform.eulerAngles.y, MiniMapCam.transform.eulerAngles.z);
         CheckBoundary();
     }
 

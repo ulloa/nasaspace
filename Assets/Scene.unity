@@ -216,8 +216,8 @@ Camera:
   m_GameObject: {fileID: 1357782580}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 3
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0.019607844}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.3803922, g: 0.3803922, b: 0.3803922, a: 0.019607844}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -248,7 +248,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1357782580}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071067}
+  m_LocalRotation: {x: 0.7069846, y: 0, z: 0, w: 0.70722896}
   m_LocalPosition: {x: 0, y: 100, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -267,3 +267,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   miniMapTexture: {fileID: 8400000, guid: e6e3b8ced8497a34da958e65f96ee0b2, type: 2}
   miniMapMaterial: {fileID: 2100000, guid: 729ba4ab80dde474a8fc25c59b60f6df, type: 2}
+  miniMapBezelTexture: {fileID: 2800000, guid: 63277da4752031b479fc76775023f35b, type: 3}
