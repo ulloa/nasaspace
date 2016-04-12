@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Linq;
+using UnityEditor;
 
 public class Tile : MonoBehaviour
 {
@@ -43,41 +44,44 @@ public class Tile : MonoBehaviour
     public GameObject NegativeZ;
     public void OnWillRenderObject()
     {
-        Collider collider = null;
-        if (PlusX == null)
+        if (!EditorApplication.isPaused)
         {
-            collider = Physics.OverlapBox(transform.GetComponent<Renderer>().bounds.center + new Vector3(RealSize.x, 0, 0), new Vector3(0.1f, 0.1f, 0.1f)).FirstOrDefault();
-            if (collider != null)
-                PlusX = collider.gameObject;
-            else
-                PlusX = (GameObject)Instantiate(gameObject, new Vector3(transform.position.x + RealSize.x, transform.position.y, transform.position.z), Quaternion.Euler(0, 0, 0));
-        }
+            Collider collider = null;
+            if (PlusX == null)
+            {
+                collider = Physics.OverlapBox(transform.GetComponent<Renderer>().bounds.center + new Vector3(RealSize.x, 0, 0), new Vector3(0.1f, 0.1f, 0.1f)).FirstOrDefault();
+                if (collider != null)
+                    PlusX = collider.gameObject;
+                else
+                    PlusX = (GameObject)Instantiate(gameObject, new Vector3(transform.position.x + RealSize.x, transform.position.y, transform.position.z), Quaternion.Euler(0, 0, 0));
+            }
 
-        if (PlusZ == null)
-        {
-            collider = Physics.OverlapBox(transform.GetComponent<Renderer>().bounds.center + new Vector3(0, 0, +RealSize.z), new Vector3(0.1f, 0.1f, 0.1f)).FirstOrDefault();
-            if (collider != null)
-                PlusZ = collider.gameObject;
-            else
-                PlusZ = (GameObject)Instantiate(gameObject, new Vector3(transform.position.x, transform.position.y, transform.position.z + RealSize.z), Quaternion.Euler(0, 0, 0));
-        }
+            if (PlusZ == null)
+            {
+                collider = Physics.OverlapBox(transform.GetComponent<Renderer>().bounds.center + new Vector3(0, 0, +RealSize.z), new Vector3(0.1f, 0.1f, 0.1f)).FirstOrDefault();
+                if (collider != null)
+                    PlusZ = collider.gameObject;
+                else
+                    PlusZ = (GameObject)Instantiate(gameObject, new Vector3(transform.position.x, transform.position.y, transform.position.z + RealSize.z), Quaternion.Euler(0, 0, 0));
+            }
 
-        if (NegativeX == null)
-        {
-            collider = Physics.OverlapBox(transform.GetComponent<Renderer>().bounds.center + new Vector3(-RealSize.x, 0, 0), new Vector3(0.1f, 0.1f, 0.1f)).FirstOrDefault();
-            if (collider != null)
-                NegativeX = collider.gameObject;
-            else
-                NegativeX = (GameObject)Instantiate(gameObject, new Vector3(transform.position.x - RealSize.x, transform.position.y, transform.position.z), Quaternion.Euler(0, 0, 0));
-        }
+            if (NegativeX == null)
+            {
+                collider = Physics.OverlapBox(transform.GetComponent<Renderer>().bounds.center + new Vector3(-RealSize.x, 0, 0), new Vector3(0.1f, 0.1f, 0.1f)).FirstOrDefault();
+                if (collider != null)
+                    NegativeX = collider.gameObject;
+                else
+                    NegativeX = (GameObject)Instantiate(gameObject, new Vector3(transform.position.x - RealSize.x, transform.position.y, transform.position.z), Quaternion.Euler(0, 0, 0));
+            }
 
-        if (NegativeZ == null)
-        {
-            collider = Physics.OverlapBox(transform.GetComponent<Renderer>().bounds.center + new Vector3(0, 0, -RealSize.z), new Vector3(0.1f, 0.1f, 0.1f)).FirstOrDefault();
-            if (collider != null)
-                NegativeZ = collider.gameObject;
-            else
-                NegativeZ = (GameObject)Instantiate(gameObject, new Vector3(transform.position.x, transform.position.y, transform.position.z - RealSize.z), Quaternion.Euler(0, 0, 0));
+            if (NegativeZ == null)
+            {
+                collider = Physics.OverlapBox(transform.GetComponent<Renderer>().bounds.center + new Vector3(0, 0, -RealSize.z), new Vector3(0.1f, 0.1f, 0.1f)).FirstOrDefault();
+                if (collider != null)
+                    NegativeZ = collider.gameObject;
+                else
+                    NegativeZ = (GameObject)Instantiate(gameObject, new Vector3(transform.position.x, transform.position.y, transform.position.z - RealSize.z), Quaternion.Euler(0, 0, 0));
+            }
         }
     }
 }
