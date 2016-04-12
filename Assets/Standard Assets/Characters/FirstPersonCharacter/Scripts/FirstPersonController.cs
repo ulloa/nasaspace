@@ -92,6 +92,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_MoveDir.y = 0f;
                 m_Jumping = false;
             }
+
             if (!m_CharacterController.isGrounded && !m_Jumping && m_PreviouslyGrounded)
             {
                 m_MoveDir.y = 0f;
@@ -107,12 +108,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_NextStep = m_StepCycle + .5f;
         }
 
+        private float jumpTempX;
+        private float jumpTempY;
         private void FixedUpdate()
         {
             float speed;
             GetInput(out speed);
             // always move along the camera forward as it is the direction that it being aimed at
-            Vector3 desiredMove = transform.forward * m_Input.y + transform.right * m_Input.x;
+            Vector3 desiredMove = transform.forward * (m_Jumping ? jumpTempY : m_Input.y) + transform.right * (m_Jumping ? jumpTempX : m_Input.x);
 
             // get a normal for the surface that is being touched to move along it
             RaycastHit hitInfo;
@@ -134,12 +137,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     PlayJumpSound();
                     m_Jump = false;
                     m_Jumping = true;
+                    jumpTempX = m_Input.x;
+                    jumpTempY = m_Input.y;
                 }
             }
             else
             {
                 m_MoveDir += Physics.gravity * m_GravityMultiplier * Time.fixedDeltaTime;
             }
+
             m_CollisionFlags = m_CharacterController.Move(m_MoveDir * Time.fixedDeltaTime);
 
             ProgressStepCycle(speed);
@@ -210,7 +216,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             m_Camera.transform.localPosition = newCameraPosition;
         }
-        
+
         private void GetInput(out float speed)
         {
             // Read input
@@ -246,7 +252,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void RotateView()
         {
-            m_MouseLook.LookRotation(transform, m_Camera.transform);            
+            m_MouseLook.LookRotation(transform, m_Camera.transform);
         }
 
 
