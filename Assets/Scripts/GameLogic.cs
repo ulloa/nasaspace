@@ -27,13 +27,5 @@ public class GameLogic : MonoBehaviour
     {
         BaseTile = (GameObject)Instantiate(BaseTile, startPosition, Quaternion.Euler(0, 0, 0));
         Player = (GameObject)Instantiate(Player, startPosition, Quaternion.Euler(0, 0, 0));
-        Instantiate(BaseTile, new Vector3(BaseTile.transform.localScale.x, 0, BaseTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
-        Instantiate(BaseTile, new Vector3(BaseTile.transform.localScale.x, 0, 0), Quaternion.Euler(0, 0, 0));
-        Instantiate(BaseTile, new Vector3(-BaseTile.transform.localScale.x, 0, 0), Quaternion.Euler(0, 0, 0));
-        Instantiate(BaseTile, new Vector3(0, 0, BaseTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
-        Instantiate(BaseTile, new Vector3(0, 0, -BaseTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
-        Instantiate(BaseTile, new Vector3(-BaseTile.transform.localScale.x, 0, BaseTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
-        Instantiate(BaseTile, new Vector3(BaseTile.transform.localScale.x, 0, -BaseTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
-        Instantiate(BaseTile, new Vector3(-BaseTile.transform.localScale.x, 0, -BaseTile.transform.localScale.z), Quaternion.Euler(0, 0, 0));
     }
 }
