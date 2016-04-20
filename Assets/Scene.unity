@@ -173,7 +173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2f4cd03b4266e8428361bfa34d605cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BaseTile: {fileID: 178726, guid: 0bdb46da379e05f4cacfcc2d611d5390, type: 2}
+  BaseTile: {fileID: 2021111727}
   Player: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
   MiniMapCam: {fileID: 1357782580}
 --- !u!4 &624501905

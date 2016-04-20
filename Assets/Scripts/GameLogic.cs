@@ -3,13 +3,13 @@ using System.Linq;
 
 public class GameLogic : MonoBehaviour
 {
-    public GameObject BaseTile;
+    public Terrain BaseTile;
     public GameObject Player;
     public GameObject MiniMapCam;
 
     void Awake()
     {
-        CreateMap(9, new Vector3(0, 10, 0));
+        CreateMap(9);
     }
 
     void Update()
@@ -23,9 +23,8 @@ public class GameLogic : MonoBehaviour
         MiniMapCam.transform.eulerAngles = new Vector3(MiniMapCam.transform.eulerAngles.x, Player.GetComponentInChildren<Camera>().transform.eulerAngles.y, MiniMapCam.transform.eulerAngles.z);
     }
 
-    public void CreateMap(int tileCount, Vector3 startPosition)
+    public void CreateMap(int tileCount)
     {
-       // BaseTile = (GameObject)Instantiate(BaseTile, startPosition, Quaternion.Euler(0, 0, 0));
-        Player = (GameObject)Instantiate(Player, startPosition, Quaternion.Euler(0, 0, 0));
+        Player = (GameObject)Instantiate(Player, new Vector3(0, BaseTile.SampleHeight(new Vector3(0, 0, 0)), 0), Quaternion.Euler(0, 0, 0));
     }
 }
