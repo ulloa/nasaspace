@@ -9,7 +9,7 @@ public class GameLogic : MonoBehaviour
 
     void Awake()
     {
-        CreateMap(9, new Vector3(0, 0, 0));
+        CreateMap(9, new Vector3(0, 10, 0));
     }
 
     void Update()
@@ -25,7 +25,7 @@ public class GameLogic : MonoBehaviour
 
     public void CreateMap(int tileCount, Vector3 startPosition)
     {
-        BaseTile = (GameObject)Instantiate(BaseTile, startPosition, Quaternion.Euler(0, 0, 0));
+       // BaseTile = (GameObject)Instantiate(BaseTile, startPosition, Quaternion.Euler(0, 0, 0));
         Player = (GameObject)Instantiate(Player, startPosition, Quaternion.Euler(0, 0, 0));
     }
 }
