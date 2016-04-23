@@ -14,9 +14,6 @@ public class Tile : MonoBehaviour
     {
         Dimensions = dimensions;
         var terrain = GetComponent<Terrain>();
-        var data = terrain.terrainData;
-        terrain.terrainData = new TerrainData();
-        terrain.terrainData.heightmapResolution = data.heightmapResolution;
         terrain.terrainData.size = Dimensions;
         TextureConverterV2.ApplyHeightmap(terrain, heightMap);
     }
