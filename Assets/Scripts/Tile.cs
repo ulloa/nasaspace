@@ -1,30 +1,40 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Linq;
 using UnityEditor;
 
 public class Tile : MonoBehaviour
 {
-    Vector3 Dimensions { get; set; }
-
-    public void SetHeightMap(Texture2D heightMap, Vector3 dimensions)
+    public Color CurColor;
+    void Awake()
     {
-        Dimensions = dimensions;
-        var terrain = GetComponent<Terrain>();
-        terrain.terrainData.size = Dimensions;
-        new TextureConverter().ApplyHeightmap(GetComponent<Terrain>(), heightMap);
+        GetComponent<MeshRenderer>().material.SetColor("_Color", new Color(Random.value, Random.value, Random.value));
+        CurColor = GetComponent<MeshRenderer>().material.GetColor("_Color");
     }
 
-    private Vector3 center;
-    public Vector3 Center
+    void Update()
+    {
+        if (GetComponent<MeshRenderer>().material.GetColor("_Color") != CurColor)
+            GetComponent<MeshRenderer>().material.SetColor("_Color", CurColor);
+    }
+
+    private Vector3 realSize;
+    public Vector3 RealSize
     {
         get
         {
-            if (center == Vector3.zero)
+            if (realSize == Vector3.zero)
             {
-                center = transform.position + new Vector3(Dimensions.x / 2, Dimensions.y, -Dimensions.z / 2);
+                Mesh planeMesh = GetComponent<MeshFilter>().mesh;
+                Bounds bounds = planeMesh.bounds;
+                // size in pixels
+                float boundsX = transform.localScale.x * bounds.size.x;
+                float boundsY = transform.localScale.y * bounds.size.y;
+                float boundsZ = transform.localScale.z * bounds.size.z;
+                realSize = new Vector3(boundsX, boundsY, boundsZ);
             }
 
-            return center;
+            return realSize;
         }
     }
 
@@ -32,57 +42,45 @@ public class Tile : MonoBehaviour
     public GameObject NegativeX;
     public GameObject PlusZ;
     public GameObject NegativeZ;
-    public void OnBecameVisible()
+    public void OnWillRenderObject()
     {
-        if (!EditorApplication.isPaused && false)
+        if (!EditorApplication.isPaused)
         {
             Collider collider = null;
             if (PlusX == null)
             {
-                collider = Physics.OverlapBox(Center + new Vector3(Dimensions.x, 0, 0), new Vector3(0.1f, 0.1f, 0.1f)).FirstOrDefault();
+                collider = Physics.OverlapBox(transform.GetComponent<Renderer>().bounds.center + new Vector3(RealSize.x, 0, 0), new Vector3(0.1f, 0.1f, 0.1f)).FirstOrDefault();
                 if (collider != null)
                     PlusX = collider.gameObject;
                 else
-                {
-                    PlusX = (GameObject)Instantiate(gameObject, new Vector3(transform.position.x + Dimensions.x, transform.position.y, transform.position.z), Quaternion.Euler(0, 0, 0));
-                    PlusX.GetComponent<Tile>().SetHeightMap(null, new Vector3(500, 100, 500));
-                }
+                    PlusX = (GameObject)Instantiate(gameObject, new Vector3(transform.position.x + RealSize.x, transform.position.y, transform.position.z), Quaternion.Euler(0, 0, 0));
             }
 
             if (PlusZ == null)
             {
-                collider = Physics.OverlapBox(Center + new Vector3(0, 0, +Dimensions.z), new Vector3(0.1f, 0.1f, 0.1f)).FirstOrDefault();
+                collider = Physics.OverlapBox(transform.GetComponent<Renderer>().bounds.center + new Vector3(0, 0, +RealSize.z), new Vector3(0.1f, 0.1f, 0.1f)).FirstOrDefault();
                 if (collider != null)
                     PlusZ = collider.gameObject;
                 else
-                {
-                    PlusZ = (GameObject)Instantiate(gameObject, new Vector3(transform.position.x, transform.position.y, transform.position.z + Dimensions.z), Quaternion.Euler(0, 0, 0));
-                    PlusZ.GetComponent<Tile>().SetHeightMap(null, new Vector3(500, 100, 500));
-                }
+                    PlusZ = (GameObject)Instantiate(gameObject, new Vector3(transform.position.x, transform.position.y, transform.position.z + RealSize.z), Quaternion.Euler(0, 0, 0));
             }
 
             if (NegativeX == null)
             {
-                collider = Physics.OverlapBox(Center + new Vector3(-Dimensions.x, 0, 0), new Vector3(0.1f, 0.1f, 0.1f)).FirstOrDefault();
+                collider = Physics.OverlapBox(transform.GetComponent<Renderer>().bounds.center + new Vector3(-RealSize.x, 0, 0), new Vector3(0.1f, 0.1f, 0.1f)).FirstOrDefault();
                 if (collider != null)
                     NegativeX = collider.gameObject;
                 else
-                {
-                    NegativeX = (GameObject)Instantiate(gameObject, new Vector3(transform.position.x - Dimensions.x, transform.position.y, transform.position.z), Quaternion.Euler(0, 0, 0));
-                    NegativeX.GetComponent<Tile>().SetHeightMap(null, new Vector3(500, 100, 500));
-                }
+                    NegativeX = (GameObject)Instantiate(gameObject, new Vector3(transform.position.x - RealSize.x, transform.position.y, transform.position.z), Quaternion.Euler(0, 0, 0));
             }
 
             if (NegativeZ == null)
             {
-                collider = Physics.OverlapBox(Center + new Vector3(0, 0, -Dimensions.z), new Vector3(0.1f, 0.1f, 0.1f)).FirstOrDefault();
+                collider = Physics.OverlapBox(transform.GetComponent<Renderer>().bounds.center + new Vector3(0, 0, -RealSize.z), new Vector3(0.1f, 0.1f, 0.1f)).FirstOrDefault();
                 if (collider != null)
                     NegativeZ = collider.gameObject;
                 else
-                {
-                    NegativeZ = (GameObject)Instantiate(gameObject, new Vector3(transform.position.x, transform.position.y, transform.position.z - Dimensions.z), Quaternion.Euler(0, 0, 0));
-                    NegativeZ.GetComponent<Tile>().SetHeightMap(null, new Vector3(500, 100, 500));
-                }
+                    NegativeZ = (GameObject)Instantiate(gameObject, new Vector3(transform.position.x, transform.position.y, transform.position.z - RealSize.z), Quaternion.Euler(0, 0, 0));
             }
         }
     }

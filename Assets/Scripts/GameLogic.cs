@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
+using System.Linq;
 
 public class GameLogic : MonoBehaviour
 {
-    public GameObject BaseTile;
+    public Terrain BaseTile;
     public GameObject Player;
     public GameObject MiniMapCam;
-    public Texture2D texture;
 
     void Awake()
     {
@@ -25,8 +25,6 @@ public class GameLogic : MonoBehaviour
 
     public void CreateMap(int tileCount)
     {
-        BaseTile = (GameObject)Instantiate(BaseTile, new Vector3(-250, 0, -250), Quaternion.Euler(0, 0, 0));
-        BaseTile.GetComponent<Tile>().SetHeightMap(texture, new Vector3(500, 100, 500));
-        Player = (GameObject)Instantiate(Player, new Vector3(0, BaseTile.GetComponent<Terrain>().SampleHeight(new Vector3(0, 0, 0)), 0), Quaternion.Euler(0, 0, 0));
+        Player = (GameObject)Instantiate(Player, new Vector3(0, BaseTile.SampleHeight(new Vector3(0, 0, 0)), 0), Quaternion.Euler(0, 0, 0));
     }
 }
