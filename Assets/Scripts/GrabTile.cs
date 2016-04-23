@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class GrabTile
+public static class GrabTile
 {
     //MARS CONSTANTS
     private const short MARS_IMAGES_MAX_X = 63;

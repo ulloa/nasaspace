@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-using System.Linq;
 
 public class GameLogic : MonoBehaviour
 {
-    public Terrain BaseTile;
+    public GameObject BaseTile;
     public GameObject Player;
     public GameObject MiniMapCam;
 
@@ -25,6 +24,9 @@ public class GameLogic : MonoBehaviour
 
     public void CreateMap(int tileCount)
     {
-        Player = (GameObject)Instantiate(Player, new Vector3(0, BaseTile.SampleHeight(new Vector3(0, 0, 0)), 0), Quaternion.Euler(0, 0, 0));
+        BaseTile = (GameObject)Instantiate(BaseTile, new Vector3(-250, 0, -250), Quaternion.Euler(0, 0, 0));
+        var dimension = new Vector3();
+        BaseTile.GetComponent<Tile>().SetHeightMap(GrabTile.MarsGetTile(22,22,null, out dimension), dimension, new Vector2(0,0));
+        Player = (GameObject)Instantiate(Player, new Vector3(0, BaseTile.GetComponent<Terrain>().SampleHeight(new Vector3(0, 0, 0)), 0), Quaternion.Euler(0, 0, 0));
     }
 }
