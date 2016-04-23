@@ -16,9 +16,9 @@ public static class GrabTile
     /// <param name="D">The direction of the tile you want to load in.</param>
     /// <param name="dimensions">the x, y, and z coordinates the Texture2D in meters.</param>
     /// <returns>A Heightmap in the form of a Texture2D.</returns>
-    public static Texture2D MarsGetTile(short currentX, short currentY, Direction? D, out Vector3 dimensions, float scale = 0.01f)
+    public static Texture2D MarsGetTile(short currentX, short currentY, Direction? D, out Vector3 dimensions, float scale = 0.001f, float scaleHeight = 0.035f)
     {
-        dimensions = new Vector3(MARS_TILE_HEIGHT * scale, MARS_PEAK * scale, 
+        dimensions = new Vector3(MARS_TILE_HEIGHT * scale, MARS_PEAK * scaleHeight, 
                         findTileWidth(211 * ((currentY > 15)? currentY - 16 : 15 - currentY)) * MARS_TILE_HEIGHT * scale);
         string url;
 
