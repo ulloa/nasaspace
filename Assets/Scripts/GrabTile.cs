@@ -2,6 +2,7 @@
 
 public class GrabTile
 {
+    //MARS CONSTANTS
     private const short MARS_IMAGES_MAX_X = 63;
     private const short MARS_IMAGES_MAX_Y = 31;
     private const string MARS_IMAGES_URL = "https://api.nasa.gov/mars-wmts/catalog/Mars_MGS_MOLA_DEM_mosaic_global_463m_8/1.0.0//default/default028mm/5/0/0.png";
@@ -9,7 +10,17 @@ public class GrabTile
     private const short MARS_PRIME_MERIDIAN_RADIUS = 3376;
     //private const float MARS_EQUATOR_CIRCUMFERENCE = 2 * Mathf.PI * MARS_EQUATOR_RADIUS;
     private const short MARS_PEAK = 24000;
-    private const int MARS_TILE_HEIGHT = 331000;
+    private const int MARS_TILE_HEIGHT = 333000;
+    private const int MARS_TILE_WIDTH = 331000;
+
+    //VESTA CONSTANTS
+    private const short VESTA_IMAGES_MAX_X = 0;
+    private const short VESTA_IMAGES_MAX_Y = 0;
+    private const string VESTA_IMAGES_URL = "";
+    private const short VESTA_PRIME_MERIDIAN_RADIUS = 223;
+    private const short VESTA_PEAK = 0;
+    private const int VESTA_TILE_HEIGHT = 11;
+    private const int VESTA_TILE_WIDTH = 14;
 
     /// <param name="currentX">Your current tile's x coordinate.</param>
     /// <param name="currentY">Your current tile's y coordinate.</param>
@@ -19,7 +30,7 @@ public class GrabTile
     public static Texture2D MarsGetTile(short currentX, short currentY, Direction? D, out Vector3 dimensions, float scale = 0.01f)
     {
         dimensions = new Vector3(MARS_TILE_HEIGHT * scale, MARS_PEAK * scale, 
-                        findTileWidth(211 * ((currentY > 15)? currentY - 16 : 15 - currentY)) * MARS_TILE_HEIGHT * scale);
+                        findTileWidth(211 * ((currentY > 15)? currentY - 16 : 15 - currentY)) * MARS_TILE_WIDTH * scale);
         string url;
 
         switch (D)
