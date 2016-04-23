@@ -14,11 +14,11 @@ public static class GrabTile
     private const int MARS_TILE_WIDTH = 331000;
 
     //VESTA CONSTANTS
-    private const short VESTA_IMAGES_MAX_X = 0;
-    private const short VESTA_IMAGES_MAX_Y = 0;
-    private const string VESTA_IMAGES_URL = "";
+    private const short VESTA_IMAGES_MAX_X = 31;
+    private const short VESTA_IMAGES_MAX_Y = 15;
+    private const string VESTA_IMAGES_URL = "https://api.nasa.gov/vesta-wmts/catalog/Vesta_Dawn_HAMO_DTM_DLR_Global_48ppd8/1.0.0//default/default028mm/4/0/0.png";
     private const short VESTA_PRIME_MERIDIAN_RADIUS = 223;
-    private const short VESTA_PEAK = 0;
+    private const short VESTA_PEAK = 22000;
     private const int VESTA_TILE_HEIGHT = 11;
     private const int VESTA_TILE_WIDTH = 14;
 
@@ -30,7 +30,7 @@ public static class GrabTile
     public static Texture2D MarsGetTile(short currentX, short currentY, Direction? D, out Vector3 dimensions, float scale = 0.01f)
     {
         dimensions = new Vector3(MARS_TILE_HEIGHT * scale, MARS_PEAK * scale, 
-                        findTileWidth(211 * ((currentY > 15)? currentY - 16 : 15 - currentY)) * MARS_TILE_WIDTH * scale);
+            findTileWidth(211 * ((currentY > 15)? currentY - 16 : 15 - currentY), MARS_PRIME_MERIDIAN_RADIUS) * MARS_TILE_WIDTH * scale);
         string url;
 
         switch (D)
@@ -62,16 +62,48 @@ public static class GrabTile
         return image.texture;
     }
 
-    private static float findTileWidth(int z)
+    public static Texture2D VestaGetTile(short currentX, short currentY, Direction? D, out Vector3 dimensions, float scale = 0.01f)
+    {
+        dimensions = new Vector3(VESTA_TILE_HEIGHT * scale, VESTA_PEAK * scale,
+            findTileWidth(211 * ((currentY > 15) ? currentY - 16 : 15 - currentY), VESTA_PRIME_MERIDIAN_RADIUS) * VESTA_TILE_WIDTH * scale);
+        string url;
+
+        switch (D)
+        {
+            case Direction.Up:
+                url = VESTA_IMAGES_URL.Replace("/4/0/0.png",
+                                     string.Format("/4/{0}/{1}.png", (currentY == 0) ? VESTA_IMAGES_MAX_Y : currentY - 1, currentX));
+                break;
+            case Direction.Right:
+                url = VESTA_IMAGES_URL.Replace("/4/0/0.png",
+                                     string.Format("/4/{0}/{1}.png", currentY, (currentX == VESTA_IMAGES_MAX_X) ? 0 : currentX + 1));
+                break;
+            case Direction.Down:
+                url = VESTA_IMAGES_URL.Replace("/4/0/0.png",
+                                     string.Format("/4/{0}/{1}.png", (currentY == VESTA_IMAGES_MAX_Y) ? 0 : currentY + 1, currentX));
+                break;
+            case Direction.Left:
+                url = VESTA_IMAGES_URL.Replace("/4/0/0.png",
+                                     string.Format("/4/{0}/{1}.png", currentY, (currentX == 0) ? VESTA_IMAGES_MAX_X : currentX - 1));
+                break;
+            default:
+                url = VESTA_IMAGES_URL;
+                break;
+        }
+
+        WWW image = new WWW(url);
+        while (!image.isDone) ;
+
+        return image.texture;
+    }
+
+    private static float findTileWidth(int z, short terresBodyPMRadius)
     {
         //return (2 * Mathf.PI * Mathf.Sqrt(Mathf.Pow(MARS_EQUATOR_RADIUS, 2) - Mathf.Pow(MARS_EQUATOR_RADIUS, 2) * Mathf.Pow(z, 2) 
         //                                                / Mathf.Pow(MARS_PRIME_MERIDIAN_RADIUS, 2)) / MARS_EQUATOR_CIRCUMFERENCE);
-        return Mathf.Sqrt(1 - Mathf.Pow(z / MARS_PRIME_MERIDIAN_RADIUS, 2));
+        return Mathf.Sqrt(1 - Mathf.Pow(z / terresBodyPMRadius, 2));
     }
 }
 
 public enum Direction
 { Up, Down, Left, Right };
-
-public enum TerrestrialBody
-{ Mars, Vesta };
