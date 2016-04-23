@@ -173,9 +173,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2f4cd03b4266e8428361bfa34d605cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BaseTile: {fileID: 2021111727}
+  BaseTile: {fileID: 144950, guid: 30548f77ec6ba2d48bf8a2900a9411d9, type: 2}
   Player: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
   MiniMapCam: {fileID: 1357782580}
+  texture: {fileID: 2800000, guid: 4ee6b6987dfc01143814df94273c67b6, type: 3}
 --- !u!4 &624501905
 Transform:
   m_ObjectHideFlags: 0
@@ -265,73 +266,3 @@ MonoBehaviour:
   miniMapTexture: {fileID: 8400000, guid: e6e3b8ced8497a34da958e65f96ee0b2, type: 2}
   miniMapMaterial: {fileID: 2100000, guid: 729ba4ab80dde474a8fc25c59b60f6df, type: 2}
   miniMapBezelTexture: {fileID: 2800000, guid: 63277da4752031b479fc76775023f35b, type: 3}
---- !u!1 &2021111725
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 2021111728}
-  - 218: {fileID: 2021111727}
-  - 154: {fileID: 2021111726}
-  m_Layer: 8
-  m_Name: Terrain
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
---- !u!154 &2021111726
-TerrainCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2021111725}
-  m_Material: {fileID: 0}
-  m_Enabled: 1
-  m_TerrainData: {fileID: 15600000, guid: a199b818c660aba4f8ca19bf684b1b18, type: 2}
-  m_EnableTreeColliders: 1
---- !u!218 &2021111727
-Terrain:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2021111725}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_TerrainData: {fileID: 15600000, guid: a199b818c660aba4f8ca19bf684b1b18, type: 2}
-  m_TreeDistance: 2000
-  m_TreeBillboardDistance: 50
-  m_TreeCrossFadeLength: 5
-  m_TreeMaximumFullLODCount: 50
-  m_DetailObjectDistance: 80
-  m_DetailObjectDensity: 1
-  m_HeightmapPixelError: 5
-  m_SplatMapDistance: 1000
-  m_HeightmapMaximumLOD: 0
-  m_CastShadows: 1
-  m_DrawHeightmap: 1
-  m_DrawTreesAndFoliage: 1
-  m_ReflectionProbeUsage: 1
-  m_MaterialType: 0
-  m_LegacySpecular:
-    serializedVersion: 2
-    rgba: 4286545791
-  m_LegacyShininess: 0.078125
-  m_MaterialTemplate: {fileID: 0}
-  m_BakeLightProbesForTrees: 1
-  m_ScaleInLightmap: 0.0512
-  m_LightmapParameters: {fileID: 15203, guid: 0000000000000000f000000000000000, type: 0}
---- !u!4 &2021111728
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2021111725}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -250, y: 0, z: -250}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
