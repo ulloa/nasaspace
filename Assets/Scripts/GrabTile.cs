@@ -15,10 +15,11 @@ public static class GrabTile
     private const int MARS_TILE_WIDTH = 331000;
 
     //VESTA CONSTANTS
-    private const short VESTA_IMAGES_MAX_X = 31;
-    private const short VESTA_IMAGES_MAX_Y = 15;
-    private const string VESTA_IMAGES_URL = "https://api.nasa.gov/vesta-wmts/catalog/Vesta_Dawn_HAMO_DTM_DLR_Global_48ppd8/1.0.0//default/default028mm/4/0/0.png";
+    private const short VESTA_IMAGES_MAX_X = 127;
+    private const short VESTA_IMAGES_MAX_Y = 63;
+    private const string VESTA_IMAGES_URL = "https://api.nasa.gov/vesta-wmts/catalog/global_LAMO/1.0.0//default/default028mm/6/0/0.png";
     private const short VESTA_PRIME_MERIDIAN_RADIUS = 223;
+    private const float VESTA_EQUATOR_CIRCUMFERENCE = 1774000;
     private const short VESTA_PEAK = 22000;
     private const int VESTA_TILE_HEIGHT = 11000;
     private const int VESTA_TILE_WIDTH = 14000;
@@ -172,6 +173,71 @@ public static class GrabTile
         mars.SetPixels(pixels);
 
         return mars;
+    }
+
+    public static Texture2D GetVestaSquare(Vector2 picCoordinants, out Vector3 dimensions, float horizontalScale = 0.001f, float verticalScale = 0.035f)
+    {
+        float horizontalDistance = VESTA_EQUATOR_CIRCUMFERENCE * 2 * horizontalScale / 128;
+        dimensions = new Vector3(horizontalDistance, VESTA_PEAK * verticalScale, horizontalDistance);
+        Color[] pixels = new Color[RECT_NUM_PIXELS];
+        WWW image;
+        Texture2D vestaChunk;
+        short upperXBound;
+        short lowerXBound;
+        short upperYBound;
+        short lowerYBound;
+
+        if (picCoordinants.y > VESTA_IMAGES_MAX_X)
+            picCoordinants.y = VESTA_IMAGES_MAX_Y;
+
+        if (picCoordinants.x > VESTA_IMAGES_MAX_X)
+            picCoordinants.x = VESTA_IMAGES_MAX_X;
+
+        if (picCoordinants.x == VESTA_IMAGES_MAX_X)
+        {
+            lowerXBound = VESTA_IMAGES_MAX_X - 1;
+            upperXBound = VESTA_IMAGES_MAX_X;
+        }
+
+        else
+        {
+            lowerXBound = (short)(picCoordinants.x);
+            upperXBound = (short)(picCoordinants.x + 1);
+        }
+
+        if (picCoordinants.y == VESTA_IMAGES_MAX_Y)
+        {
+            lowerYBound = VESTA_IMAGES_MAX_Y - 1;
+            upperYBound = VESTA_IMAGES_MAX_Y;
+        }
+
+        else
+        {
+            upperYBound = (short)(picCoordinants.y + 1);
+            lowerYBound = (short)(picCoordinants.y);
+        }
+
+        for (short y = lowerYBound; y <= upperYBound; y++) //Iterate through each image row.
+        {
+            for (short x = lowerXBound; x <= upperXBound; x++) //Iterate through each image column.
+            {
+                image = new WWW(VESTA_IMAGES_URL.Replace("/4/0/0.png", string.Format("/4/{0}/{1}.png", y, x)));
+                while (!image.isDone) ;
+                vestaChunk = image.texture;
+
+                for (short j = 0; j < 256; j++) //Iterate through each pixel row.
+                {
+                    for (short i = 0; i < 256; i++) //Iterate through each pixel column.
+                        pixels[(y - lowerYBound) * NUM_PIXELS_SIDE * 256 + j * NUM_PIXELS_SIDE + (x - lowerXBound) * 256 + i]
+                                                                                = vestaChunk.GetPixel(i, j);
+                }
+            }
+        }
+
+        Texture2D vesta = new Texture2D(NUM_PIXELS_SIDE, NUM_PIXELS_SIDE);
+        vesta.SetPixels(pixels);
+
+        return vesta;
     }
 
     public static Texture2D GetMarsHeightMap()

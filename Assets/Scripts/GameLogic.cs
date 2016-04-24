@@ -16,7 +16,7 @@ public class GameLogic : MonoBehaviour
     {
         CreateMap(9);
         Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Confined;  
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
     void Update()
@@ -38,9 +38,19 @@ public class GameLogic : MonoBehaviour
 
     public void CreateMap(int tileCount)
     {
-        //var dimension = new Vector3();
-        //BaseTile.GetComponent<Tile>().SetHeightMap(GrabTile.GetMarsHeightMap(out dimension), dimension);
-        PausePanel.GetComponent<RawImage>().texture = MarsMap;
+        var dimension = new Vector3();
+        
+        if (PublicVariables.scenetoload == SceneToLoad.Mars)
+        {
+            BaseTile.GetComponent<Tile>().SetHeightMap(GrabTile.GetMarsSquare(new Vector2(34, 16), out dimension), dimension);
+            PausePanel.GetComponent<RawImage>().texture = MarsMap;
+        }
+        else
+        {
+            BaseTile.GetComponent<Tile>().SetHeightMap(GrabTile.GetVestaSquare(new Vector2(28, 8), out dimension), dimension);
+            PausePanel.GetComponent<RawImage>().texture = VestaMap;
+        }
+
         Player = (GameObject)Instantiate(Player, new Vector3(0, BaseTile.GetComponent<Terrain>().SampleHeight(new Vector3(0, 0, 0)), 0), Quaternion.Euler(0, 0, 0));
     }
 
@@ -71,6 +81,7 @@ public class GameLogic : MonoBehaviour
     }
 
     Vector3[] MarsPositions = new Vector3[] { new Vector3(0, 0, 10), new Vector3(10, 0, 0) };
+    Vector3[] VestaPositions = new Vector3[] { new Vector3(0, 0, 10), new Vector3(10, 0, 0) };
 
     public void TeleportPlayerToLocation(int positionNumber)
     {
