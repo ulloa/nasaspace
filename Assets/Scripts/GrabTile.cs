@@ -13,7 +13,7 @@ public static class GrabTile
     private const short MARS_PEAK = 24000;
     private const int MARS_TILE_HEIGHT = 333000;
     private const int MARS_TILE_WIDTH = 331000;
-    private const int MARS_NUM_PIXELS = 524288;
+    private const int MARS_NUM_PIXELS = 134217728;
     private const short MARS_ROW_NUM_PIXELS = 16384;
     private const short MARS_COLUMN_NUM_PIXELS = 8192;
 
@@ -33,14 +33,14 @@ public static class GrabTile
     /// <returns>A Heightmap in the form of a Texture2D.</returns>
     public static Texture2D MarsGetTile(short currentX, short currentY, Direction? D, out Vector3 dimensions, float scale = 0.001f, float scaleHeight = 0.035f)
     {
-        dimensions = new Vector3(MARS_TILE_HEIGHT * scale, MARS_PEAK * scaleHeight, 
-            findTileWidth(211 * ((currentY > 15)? currentY - 16 : 15 - currentY), MARS_PRIME_MERIDIAN_RADIUS) * MARS_TILE_WIDTH * scale);
+        dimensions = new Vector3(MARS_TILE_HEIGHT * scale, MARS_PEAK * scaleHeight,
+            findTileWidth(211 * ((currentY > 15) ? currentY - 16 : 15 - currentY), MARS_PRIME_MERIDIAN_RADIUS) * MARS_TILE_WIDTH * scale);
         string url;
 
         switch (D)
         {
             case Direction.Up:
-                url = MARS_IMAGES_URL.Replace("/5/0/0.png", 
+                url = MARS_IMAGES_URL.Replace("/5/0/0.png",
                                      string.Format("/5/{0}/{1}.png", (currentY == 0) ? MARS_IMAGES_MAX_Y : currentY - 1, currentX));
                 break;
             case Direction.Right:
@@ -49,7 +49,7 @@ public static class GrabTile
                 break;
             case Direction.Down:
                 url = MARS_IMAGES_URL.Replace("/5/0/0.png",
-                                     string.Format("/5/{0}/{1}.png", (currentY == MARS_IMAGES_MAX_Y)? 0 : currentY + 1, currentX));
+                                     string.Format("/5/{0}/{1}.png", (currentY == MARS_IMAGES_MAX_Y) ? 0 : currentY + 1, currentX));
                 break;
             case Direction.Left:
                 url = MARS_IMAGES_URL.Replace("/5/0/0.png",
@@ -62,7 +62,7 @@ public static class GrabTile
 
         WWW image = new WWW(url);
         while (!image.isDone) ;
-        
+
         return image.texture;
     }
 
@@ -110,7 +110,7 @@ public static class GrabTile
 
     public static Texture2D GetMarsHeightMap(out Vector3 dimensions, float horizontalScale = 0.01f, float verticalScale = 0.01f)
     {
-        dimensions = new Vector3(MARS_EQUATOR_CIRCUMFERENCE * horizontalScale, 
+        dimensions = new Vector3(MARS_EQUATOR_CIRCUMFERENCE * horizontalScale,
                                 MARS_EQUATOR_CIRCUMFERENCE * horizontalScale, MARS_PEAK * verticalScale);
         Color[] pixels = new Color[MARS_NUM_PIXELS];
         WWW image;
@@ -127,7 +127,7 @@ public static class GrabTile
                 for (int j = 0; j < 256; j++) //Iterate through each pixel row.
                 {
                     for (int i = 0; i < 256; i++) //Iterate through each pixel column.
-                        pixels[y * MARS_ROW_NUM_PIXELS + x * 256 + i] = marsChunk.GetPixel(i, j);
+                        pixels[y * MARS_ROW_NUM_PIXELS * 256 + j * MARS_ROW_NUM_PIXELS + x * 256 + i] = marsChunk.GetPixel(i, j);
                 }
             }
         }
