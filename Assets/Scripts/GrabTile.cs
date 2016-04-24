@@ -13,9 +13,6 @@ public static class GrabTile
     private const short MARS_PEAK = 24000;
     private const int MARS_TILE_HEIGHT = 333000;
     private const int MARS_TILE_WIDTH = 331000;
-    private const int MARS_NUM_PIXELS = 134217728;
-    private const short MARS_ROW_NUM_PIXELS = 16384;
-    private const short MARS_COLUMN_NUM_PIXELS = 8192;
 
     //VESTA CONSTANTS
     private const short VESTA_IMAGES_MAX_X = 31;
@@ -25,6 +22,10 @@ public static class GrabTile
     private const short VESTA_PEAK = 22000;
     private const int VESTA_TILE_HEIGHT = 11000;
     private const int VESTA_TILE_WIDTH = 14000;
+
+    //IMAGE CONSTANTS
+    private const short NUM_PIXELS_SIDE = 512;
+    private const int RECT_NUM_PIXELS = 262144;
 
     /// <param name="currentX">Your current tile's x coordinate.</param>
     /// <param name="currentY">Your current tile's y coordinate.</param>
@@ -108,34 +109,74 @@ public static class GrabTile
         return Mathf.Sqrt(1 - Mathf.Pow(z / terresBodyPMRadius, 2));
     }
 
-    public static Texture2D GetMarsHeightMap(out Vector3 dimensions, float horizontalScale = 0.001f, float verticalScale = 0.035f)
+    public static Texture2D GetMarsSquare(Vector2 picCoordinants, out Vector3 dimensions, float horizontalScale = 0.001f, float verticalScale = 0.035f)
     {
-        dimensions = new Vector3(MARS_EQUATOR_CIRCUMFERENCE * horizontalScale, MARS_PEAK * verticalScale,
-                                                            MARS_EQUATOR_CIRCUMFERENCE * horizontalScale);
-        Color[] pixels = new Color[MARS_NUM_PIXELS];
+        float horizontalDistance = MARS_EQUATOR_CIRCUMFERENCE * 2 * horizontalScale / 64;
+        dimensions = new Vector3(horizontalDistance, MARS_PEAK * verticalScale, horizontalDistance);
+        Color[] pixels = new Color[RECT_NUM_PIXELS];
         WWW image;
         Texture2D marsChunk;
+        short upperXBound;
+        short lowerXBound;
+        short upperYBound;
+        short lowerYBound;
 
-        for (int y = 0; y <= MARS_IMAGES_MAX_Y; y++) //Iterate through each image row.
+        if (picCoordinants.y > MARS_IMAGES_MAX_Y)
+            picCoordinants.y = MARS_IMAGES_MAX_Y;
+
+        if (picCoordinants.x > MARS_IMAGES_MAX_X)
+            picCoordinants.x = MARS_IMAGES_MAX_X;
+
+        if (picCoordinants.x == MARS_IMAGES_MAX_X)
         {
-            for (int x = 0; x <= MARS_IMAGES_MAX_X; x++) //Iterate through each image column.
+            lowerXBound = MARS_IMAGES_MAX_X - 1;
+            upperXBound = MARS_IMAGES_MAX_X;
+        }
+
+        else
+        {
+            lowerXBound = (short)(picCoordinants.x);
+            upperXBound = (short)(picCoordinants.x + 1);
+        }
+
+        if (picCoordinants.y == MARS_IMAGES_MAX_Y)
+        {
+            lowerYBound = MARS_IMAGES_MAX_Y - 1;
+            upperYBound = MARS_IMAGES_MAX_Y;
+        }
+
+        else
+        {
+            upperYBound = (short)(picCoordinants.y + 1);
+            lowerYBound = (short)(picCoordinants.y);
+        }
+
+        for (short y = lowerYBound; y <= upperYBound; y++) //Iterate through each image row.
+        {
+            for (short x = lowerXBound; x <= upperXBound; x++) //Iterate through each image column.
             {
                 image = new WWW(MARS_IMAGES_URL.Replace("/5/0/0.png", string.Format("/5/{0}/{1}.png", y, x)));
                 while (!image.isDone) ;
                 marsChunk = image.texture;
 
-                for (int j = 0; j < 256; j++) //Iterate through each pixel row.
+                for (short j = 0; j < 256; j++) //Iterate through each pixel row.
                 {
-                    for (int i = 0; i < 256; i++) //Iterate through each pixel column.
-                        pixels[y * MARS_ROW_NUM_PIXELS * 256 + j * MARS_ROW_NUM_PIXELS + x * 256 + i] = marsChunk.GetPixel(i, j);
+                    for (short i = 0; i < 256; i++) //Iterate through each pixel column.
+                        pixels[(y - lowerYBound) * NUM_PIXELS_SIDE * 256 + j * NUM_PIXELS_SIDE + (x - lowerXBound) * 256 + i] 
+                                                                                = marsChunk.GetPixel(i, j);
                 }
             }
         }
 
-        Texture2D mars = new Texture2D(MARS_ROW_NUM_PIXELS, MARS_COLUMN_NUM_PIXELS);
+        Texture2D mars = new Texture2D(NUM_PIXELS_SIDE, NUM_PIXELS_SIDE);
         mars.SetPixels(pixels);
 
         return mars;
+    }
+
+    public static Texture2D GetMarsHeightMap()
+    {
+        return new Texture2D(2, 2);
     }
 }
 
