@@ -21,6 +21,7 @@ public class GameLogic : MonoBehaviour
     {
         //BaseTile = (GameObject)Instantiate(BaseTile, new Vector3(-250, 0, -250), Quaternion.Euler(0, 0, 0));
         var dimension = new Vector3();
+        BaseTile.GetComponent<Tile>().SetHeightMap(GrabTile.GetMarsHeightMap(out dimension), dimension);
         //BaseTile.GetComponent<Tile>().SetHeightMap(GrabTile.MarsGetTile(out dimension), dimension, new Vector2(0,0));
         Player = (GameObject)Instantiate(Player, new Vector3(0, BaseTile.GetComponent<Terrain>().SampleHeight(new Vector3(0, 0, 0)), 0), Quaternion.Euler(0, 0, 0));
     }
