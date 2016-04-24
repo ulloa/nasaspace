@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public static class GrabTile
 {
@@ -8,10 +9,13 @@ public static class GrabTile
     private const string MARS_IMAGES_URL = "https://api.nasa.gov/mars-wmts/catalog/Mars_MGS_MOLA_DEM_mosaic_global_463m_8/1.0.0//default/default028mm/5/0/0.png";
     //private const short MARS_EQUATOR_RADIUS = 3396;
     private const short MARS_PRIME_MERIDIAN_RADIUS = 3376;
-    //private const float MARS_EQUATOR_CIRCUMFERENCE = 2 * Mathf.PI * MARS_EQUATOR_RADIUS;
+    private const float MARS_EQUATOR_CIRCUMFERENCE = 21344000;
     private const short MARS_PEAK = 24000;
     private const int MARS_TILE_HEIGHT = 333000;
     private const int MARS_TILE_WIDTH = 331000;
+    private const int MARS_NUM_PIXELS = 524288;
+    private const short MARS_ROW_NUM_PIXELS = 16384;
+    private const short MARS_COLUMN_NUM_PIXELS = 8192;
 
     //VESTA CONSTANTS
     private const short VESTA_IMAGES_MAX_X = 31;
@@ -19,8 +23,8 @@ public static class GrabTile
     private const string VESTA_IMAGES_URL = "https://api.nasa.gov/vesta-wmts/catalog/Vesta_Dawn_HAMO_DTM_DLR_Global_48ppd8/1.0.0//default/default028mm/4/0/0.png";
     private const short VESTA_PRIME_MERIDIAN_RADIUS = 223;
     private const short VESTA_PEAK = 22000;
-    private const int VESTA_TILE_HEIGHT = 11;
-    private const int VESTA_TILE_WIDTH = 14;
+    private const int VESTA_TILE_HEIGHT = 11000;
+    private const int VESTA_TILE_WIDTH = 14000;
 
     /// <param name="currentX">Your current tile's x coordinate.</param>
     /// <param name="currentY">Your current tile's y coordinate.</param>
@@ -58,7 +62,7 @@ public static class GrabTile
 
         WWW image = new WWW(url);
         while (!image.isDone) ;
-
+        
         return image.texture;
     }
 
@@ -102,6 +106,36 @@ public static class GrabTile
         //return (2 * Mathf.PI * Mathf.Sqrt(Mathf.Pow(MARS_EQUATOR_RADIUS, 2) - Mathf.Pow(MARS_EQUATOR_RADIUS, 2) * Mathf.Pow(z, 2) 
         //                                                / Mathf.Pow(MARS_PRIME_MERIDIAN_RADIUS, 2)) / MARS_EQUATOR_CIRCUMFERENCE);
         return Mathf.Sqrt(1 - Mathf.Pow(z / terresBodyPMRadius, 2));
+    }
+
+    public static Texture2D GetMarsHeightMap(out Vector3 dimensions, float horizontalScale = 0.01f, float verticalScale = 0.01f)
+    {
+        dimensions = new Vector3(MARS_EQUATOR_CIRCUMFERENCE * horizontalScale, 
+                                MARS_EQUATOR_CIRCUMFERENCE * horizontalScale, MARS_PEAK * verticalScale);
+        Color[] pixels = new Color[MARS_NUM_PIXELS];
+        WWW image;
+        Texture2D marsChunk;
+
+        for (int y = 0; y <= MARS_IMAGES_MAX_Y; y++) //Iterate through each image row.
+        {
+            for (int x = 0; x <= MARS_IMAGES_MAX_X; x++) //Iterate through each image column.
+            {
+                image = new WWW(MARS_IMAGES_URL.Replace("/5/0/0.png", string.Format("/5/{0}/{1}.png", y, x)));
+                while (!image.isDone) ;
+                marsChunk = image.texture;
+
+                for (int j = 0; j < 256; j++) //Iterate through each pixel row.
+                {
+                    for (int i = 0; i < 256; i++) //Iterate through each pixel column.
+                        pixels[y * MARS_ROW_NUM_PIXELS + x * 256 + i] = marsChunk.GetPixel(i, j);
+                }
+            }
+        }
+
+        Texture2D mars = new Texture2D(MARS_ROW_NUM_PIXELS, MARS_COLUMN_NUM_PIXELS);
+        mars.SetPixels(pixels);
+
+        return mars;
     }
 }
 
