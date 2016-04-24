@@ -108,10 +108,10 @@ public static class GrabTile
         return Mathf.Sqrt(1 - Mathf.Pow(z / terresBodyPMRadius, 2));
     }
 
-    public static Texture2D GetMarsHeightMap(out Vector3 dimensions, float horizontalScale = 0.01f, float verticalScale = 0.01f)
+    public static Texture2D GetMarsHeightMap(out Vector3 dimensions, float horizontalScale = 0.001f, float verticalScale = 0.035f)
     {
         dimensions = new Vector3(MARS_EQUATOR_CIRCUMFERENCE * horizontalScale,
-                                MARS_EQUATOR_CIRCUMFERENCE * horizontalScale, MARS_PEAK * verticalScale);
+                                 MARS_PEAK * verticalScale, MARS_EQUATOR_CIRCUMFERENCE * horizontalScale);
         Color[] pixels = new Color[MARS_NUM_PIXELS];
         WWW image;
         Texture2D marsChunk;
