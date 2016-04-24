@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameLogic : MonoBehaviour
 {
@@ -45,7 +46,7 @@ public class GameLogic : MonoBehaviour
 
     public void ExitGame()
     {
-
+        SceneManager.LoadScene("Menu");
     }
 
     public void UnPause()
@@ -69,7 +70,7 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    Vector3[] MarsPositions = new Vector3[] { new Vector3(0,0,10), new Vector3(10,0,0) };    
+    Vector3[] MarsPositions = new Vector3[] { new Vector3(0, 0, 10), new Vector3(10, 0, 0) };
 
     public void TeleportPlayerToLocation(int positionNumber)
     {

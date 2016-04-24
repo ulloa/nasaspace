@@ -141,3 +141,5 @@ public static class GrabTile
 
 public enum Direction
 { Up, Down, Left, Right };
+
+public enum SceneToLoad { Mars, Vesta }
