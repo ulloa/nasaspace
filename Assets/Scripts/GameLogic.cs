@@ -16,7 +16,7 @@ public class GameLogic : MonoBehaviour
     {
         CreateMap(9);
         Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.lockState = CursorLockMode.Confined;  
     }
 
     void Update()
