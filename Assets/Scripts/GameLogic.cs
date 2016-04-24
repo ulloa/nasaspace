@@ -31,7 +31,7 @@ public class GameLogic : MonoBehaviour
     {
         if (!IsPause)
         {
-            MiniMapCam.transform.position = new Vector3(Player.transform.position.x, MiniMapCam.transform.position.y, Player.transform.position.z);
+            MiniMapCam.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + 150, Player.transform.position.z);
             MiniMapCam.transform.eulerAngles = new Vector3(MiniMapCam.transform.eulerAngles.x, Player.GetComponentInChildren<Camera>().transform.eulerAngles.y, MiniMapCam.transform.eulerAngles.z);
         }
     }
@@ -39,7 +39,7 @@ public class GameLogic : MonoBehaviour
     public void CreateMap(int tileCount)
     {
         var dimension = new Vector3();
-        
+
         if (PublicVariables.scenetoload == SceneToLoad.Mars)
         {
             BaseTile.GetComponent<Tile>().SetHeightMap(GrabTile.GetMarsSquare(new Vector2(34, 16), out dimension), dimension);
@@ -51,7 +51,7 @@ public class GameLogic : MonoBehaviour
             PausePanel.GetComponent<RawImage>().texture = VestaMap;
         }
 
-        Player = (GameObject)Instantiate(Player, new Vector3(0, BaseTile.GetComponent<Terrain>().SampleHeight(new Vector3(0, 0, 0)), 0), Quaternion.Euler(0, 0, 0));
+        Player = (GameObject)Instantiate(Player, new Vector3(0, BaseTile.GetComponent<Terrain>().SampleHeight(new Vector3(0, 0, 0)), 0), Quaternion.Euler(0, 210, 0));
     }
 
     public void ExitGame()
