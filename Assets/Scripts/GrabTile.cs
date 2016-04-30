@@ -164,7 +164,7 @@ public static class GrabTile
                 {
                     for (short i = 0; i < 256; i++) //Iterate through each pixel column.
                         pixels[(y - lowerYBound) * NUM_PIXELS_SIDE * 256 + j * NUM_PIXELS_SIDE + (x - lowerXBound) * 256 + i] 
-                                                                                = marsChunk.GetPixel(i, j);
+                                                                                = marsChunk.GetPixel(i, 255 - j);
                 }
             }
         }
