@@ -42,7 +42,7 @@ public class GameLogic : MonoBehaviour
 
         if (PublicVariables.scenetoload == SceneToLoad.Mars)
         {
-            BaseTile.GetComponent<Tile>().SetHeightMap(GrabTile.GetMarsSquare(new Vector2(34, 16), 3, out dimension), dimension);
+            BaseTile.GetComponent<Tile>().SetHeightMap(GrabTile.GetMarsSquare(new Vector2(34, 16), 7, out dimension), dimension);
             PausePanel.GetComponent<RawImage>().texture = MarsMap;
         }
         else
@@ -51,7 +51,10 @@ public class GameLogic : MonoBehaviour
             PausePanel.GetComponent<RawImage>().texture = VestaMap;
         }
 
-        Player = (GameObject)Instantiate(Player, new Vector3(0, BaseTile.GetComponent<Terrain>().SampleHeight(new Vector3(0, 0, 0)), 0), Quaternion.Euler(0, 210, 0));
+        var width = BaseTile.GetComponent<Terrain>().terrainData.heightmapWidth / 2;
+        var height = BaseTile.GetComponent<Terrain>().terrainData.heightmapHeight / 2;
+
+        Player = (GameObject)Instantiate(Player, new Vector3(width, BaseTile.GetComponent<Terrain>().SampleHeight(new Vector3(width, 0, height)), height), Quaternion.Euler(0, 0, 0));
     }
 
     public void ExitGame()

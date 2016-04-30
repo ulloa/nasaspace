@@ -109,11 +109,13 @@ public static class GrabTile
         return Mathf.Sqrt(1 - Mathf.Pow(z / terresBodyPMRadius, 2));
     }
 
-    public static Texture2D GetMarsSquare(Vector2 picCoordinants, int squareLength, out Vector3 dimensions, float horizontalScale = 0.001f, float verticalScale = 0.005f)
+    public static Texture2D GetMarsSquare(Vector2 picCoordinants, int squareLength, out Vector3 dimensions, float horizontalScale = 0.01f, float verticalScale = 0.085f)
     {
-        float tileSize = MARS_EQUATOR_CIRCUMFERENCE * horizontalScale / (MARS_IMAGES_MAX_X + 1);
-        dimensions = new Vector3(tileSize * squareLength, MARS_PEAK * verticalScale, tileSize * squareLength);
+        float tileSize = (MARS_EQUATOR_CIRCUMFERENCE * squareLength * horizontalScale) / (MARS_IMAGES_MAX_X + 1);
+        dimensions = new Vector3(tileSize, MARS_PEAK * verticalScale, tileSize);
         squareLength = squareLength - 1;
+        Texture2D marsChunk;
+
         int upperXBound;
         int lowerXBound;
         int upperYBound;
@@ -147,24 +149,40 @@ public static class GrabTile
             lowerYBound = (int)(picCoordinants.y);
         }
 
-        var images = new List<TileContainer>();
+        Color[] pixels = null;
+        int width = 0;
+        int height = 0;
 
-        for (int y = lowerYBound; y <= upperYBound; y++) //Iterate through each image row.
+        for (int y = upperYBound; y >= lowerYBound; y--) //Iterate through each image row.
         {
             for (int x = lowerXBound; x <= upperXBound; x++) //Iterate through each image column.
             {
-
                 var image = new WWW(MARS_IMAGES_URL.Replace("/5/0/0.png", string.Format("/5/{0}/{1}.png", y, x)));
                 while (!image.isDone) ;
-                images.Add(new TileContainer() { Texture = image.texture, Position = new Vector2(x, y) });
+
+                marsChunk = image.texture;
+
+                if (pixels == null)
+                {
+                    height = marsChunk.height;
+                    width = marsChunk.width;
+                    pixels = new Color[((squareLength + 1) * marsChunk.width) * (marsChunk.height * (squareLength + 1))];
+                }
+
+                for (short j = 0; j < 256; j++) //Iterate through each pixel row.
+                {
+                    for (short i = 0; i < 256; i++) //Iterate through each pixel column.
+                        pixels[(y - lowerYBound) * ((squareLength + 1) * marsChunk.height) * marsChunk.height
+                            + j * ((squareLength + 1) * marsChunk.width) + (x - lowerXBound) * marsChunk.height + i] = marsChunk.GetPixel(i, (marsChunk.height - 1) - j);
+                }
             }
         }
 
-        Texture2D mars = new Texture2D(images.First().Texture.width * (squareLength + 1), images.First().Texture.height * (squareLength + 1));
-        mars.PackTextures(images.OrderBy(x => x, new TileContainerSorter()).Select(x => x.Texture).ToArray(), 0, images.First().Texture.width * (squareLength + 1));
+        Texture2D mars = new Texture2D(width * (squareLength + 1), height * (squareLength + 1));
+        mars.SetPixels(pixels);
 
-        byte[] bytes = mars.EncodeToPNG();
-        File.WriteAllBytes(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "/Mars_SavedScreen.png", bytes);
+        //byte[] bytes = mars.EncodeToPNG();
+        //File.WriteAllBytes(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "/Mars_SavedScreen.png", bytes);
 
         return mars;
     }
