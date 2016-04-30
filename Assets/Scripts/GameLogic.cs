@@ -42,12 +42,12 @@ public class GameLogic : MonoBehaviour
 
         if (PublicVariables.scenetoload == SceneToLoad.Mars)
         {
-            BaseTile.GetComponent<Tile>().SetHeightMap(GrabTile.GetMarsSquare(new Vector2(34, 16), out dimension), dimension);
+            BaseTile.GetComponent<Tile>().SetHeightMap(GrabTile.GetMarsSquare(new Vector2(34, 16), 3, out dimension), dimension);
             PausePanel.GetComponent<RawImage>().texture = MarsMap;
         }
         else
         {
-            BaseTile.GetComponent<Tile>().SetHeightMap(GrabTile.GetVestaSquare(new Vector2(28, 8), out dimension), dimension);
+            BaseTile.GetComponent<Tile>().SetHeightMap(GrabTile.GetVestaSquare(new Vector2(83, 20), out dimension), dimension);
             PausePanel.GetComponent<RawImage>().texture = VestaMap;
         }
 
@@ -85,8 +85,16 @@ public class GameLogic : MonoBehaviour
 
     public void TeleportPlayerToLocation(int positionNumber)
     {
-        Player.transform.position = new Vector3(MarsPositions[positionNumber].x,
-            BaseTile.GetComponent<Terrain>().SampleHeight(MarsPositions[positionNumber]), MarsPositions[positionNumber].z);
+        if (PublicVariables.scenetoload == SceneToLoad.Mars)
+        {
+            Player.transform.position = new Vector3(MarsPositions[positionNumber].x,
+                BaseTile.GetComponent<Terrain>().SampleHeight(MarsPositions[positionNumber]), MarsPositions[positionNumber].z);
+        }
+        else
+        {
+            Player.transform.position = new Vector3(VestaPositions[positionNumber].x,
+                BaseTile.GetComponent<Terrain>().SampleHeight(VestaPositions[positionNumber]), VestaPositions[positionNumber].z);
+        }
         UnPause();
     }
 }

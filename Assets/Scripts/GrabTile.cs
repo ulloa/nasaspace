@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using System.Linq;
 
 public static class GrabTile
 {
@@ -23,10 +26,6 @@ public static class GrabTile
     private const short VESTA_PEAK = 22000;
     private const int VESTA_TILE_HEIGHT = 11000;
     private const int VESTA_TILE_WIDTH = 14000;
-
-    //IMAGE CONSTANTS
-    private const short NUM_PIXELS_SIDE = 512;
-    private const int RECT_NUM_PIXELS = 262144;
 
     /// <param name="currentX">Your current tile's x coordinate.</param>
     /// <param name="currentY">Your current tile's y coordinate.</param>
@@ -110,17 +109,15 @@ public static class GrabTile
         return Mathf.Sqrt(1 - Mathf.Pow(z / terresBodyPMRadius, 2));
     }
 
-    public static Texture2D GetMarsSquare(Vector2 picCoordinants, out Vector3 dimensions, float horizontalScale = 0.001f, float verticalScale = 0.035f)
+    public static Texture2D GetMarsSquare(Vector2 picCoordinants, int squareLength, out Vector3 dimensions, float horizontalScale = 0.001f, float verticalScale = 0.005f)
     {
-        float horizontalDistance = MARS_EQUATOR_CIRCUMFERENCE * 2 * horizontalScale / 64;
-        dimensions = new Vector3(horizontalDistance, MARS_PEAK * verticalScale, horizontalDistance);
-        Color[] pixels = new Color[RECT_NUM_PIXELS];
-        WWW image;
-        Texture2D marsChunk;
-        short upperXBound;
-        short lowerXBound;
-        short upperYBound;
-        short lowerYBound;
+        float tileSize = MARS_EQUATOR_CIRCUMFERENCE * horizontalScale / (MARS_IMAGES_MAX_X + 1);
+        dimensions = new Vector3(tileSize * squareLength, MARS_PEAK * verticalScale, tileSize * squareLength);
+        squareLength = squareLength - 1;
+        int upperXBound;
+        int lowerXBound;
+        int upperYBound;
+        int lowerYBound;
 
         if (picCoordinants.y > MARS_IMAGES_MAX_Y)
             picCoordinants.y = MARS_IMAGES_MAX_Y;
@@ -130,64 +127,59 @@ public static class GrabTile
 
         if (picCoordinants.x == MARS_IMAGES_MAX_X)
         {
-            lowerXBound = MARS_IMAGES_MAX_X - 1;
+            lowerXBound = MARS_IMAGES_MAX_X - squareLength;
             upperXBound = MARS_IMAGES_MAX_X;
         }
-
         else
         {
-            lowerXBound = (short)(picCoordinants.x);
-            upperXBound = (short)(picCoordinants.x + 1);
+            lowerXBound = (int)picCoordinants.x;
+            upperXBound = (int)(picCoordinants.x + squareLength);
         }
 
         if (picCoordinants.y == MARS_IMAGES_MAX_Y)
         {
-            lowerYBound = MARS_IMAGES_MAX_Y - 1;
+            lowerYBound = (int)(MARS_IMAGES_MAX_Y - squareLength);
             upperYBound = MARS_IMAGES_MAX_Y;
         }
-
         else
         {
-            upperYBound = (short)(picCoordinants.y + 1);
-            lowerYBound = (short)(picCoordinants.y);
+            upperYBound = (int)(picCoordinants.y + squareLength);
+            lowerYBound = (int)(picCoordinants.y);
         }
 
-        for (short y = lowerYBound; y <= upperYBound; y++) //Iterate through each image row.
-        {
-            for (short x = lowerXBound; x <= upperXBound; x++) //Iterate through each image column.
-            {
-                image = new WWW(MARS_IMAGES_URL.Replace("/5/0/0.png", string.Format("/5/{0}/{1}.png", y, x)));
-                while (!image.isDone) ;
-                marsChunk = image.texture;
+        var images = new List<TileContainer>();
 
-                for (short j = 0; j < 256; j++) //Iterate through each pixel row.
-                {
-                    for (short i = 0; i < 256; i++) //Iterate through each pixel column.
-                        pixels[(y - lowerYBound) * NUM_PIXELS_SIDE * 256 + j * NUM_PIXELS_SIDE + (x - lowerXBound) * 256 + i] 
-                                                                                = marsChunk.GetPixel(i, j);
-                }
+        for (int y = lowerYBound; y <= upperYBound; y++) //Iterate through each image row.
+        {
+            for (int x = lowerXBound; x <= upperXBound; x++) //Iterate through each image column.
+            {
+
+                var image = new WWW(MARS_IMAGES_URL.Replace("/5/0/0.png", string.Format("/5/{0}/{1}.png", y, x)));
+                while (!image.isDone) ;
+                images.Add(new TileContainer() { Texture = image.texture, Position = new Vector2(x, y) });
             }
         }
 
-        Texture2D mars = new Texture2D(NUM_PIXELS_SIDE, NUM_PIXELS_SIDE);
-        mars.SetPixels(pixels);
+        Texture2D mars = new Texture2D(images.First().Texture.width * (squareLength + 1), images.First().Texture.height * (squareLength + 1));
+        mars.PackTextures(images.OrderBy(x => x, new TileContainerSorter()).Select(x => x.Texture).ToArray(), 0, images.First().Texture.width * (squareLength + 1));
+
+        byte[] bytes = mars.EncodeToPNG();
+        File.WriteAllBytes(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "/Mars_SavedScreen.png", bytes);
 
         return mars;
     }
 
     public static Texture2D GetVestaSquare(Vector2 picCoordinants, out Vector3 dimensions, float horizontalScale = 0.001f, float verticalScale = 0.035f)
     {
-        float horizontalDistance = VESTA_EQUATOR_CIRCUMFERENCE * 2 * horizontalScale / 128;
-        dimensions = new Vector3(horizontalDistance, VESTA_PEAK * verticalScale, horizontalDistance);
-        Color[] pixels = new Color[RECT_NUM_PIXELS];
-        WWW image;
-        Texture2D vestaChunk;
+        float tileSize = VESTA_EQUATOR_CIRCUMFERENCE * horizontalScale / (VESTA_IMAGES_MAX_X + 1);
+        dimensions = new Vector3(tileSize, VESTA_PEAK * verticalScale, tileSize);
+        WWW image = new WWW("");
         short upperXBound;
         short lowerXBound;
         short upperYBound;
         short lowerYBound;
 
-        if (picCoordinants.y > VESTA_IMAGES_MAX_X)
+        if (picCoordinants.y > VESTA_IMAGES_MAX_Y)
             picCoordinants.y = VESTA_IMAGES_MAX_Y;
 
         if (picCoordinants.x > VESTA_IMAGES_MAX_X)
@@ -198,7 +190,6 @@ public static class GrabTile
             lowerXBound = VESTA_IMAGES_MAX_X - 1;
             upperXBound = VESTA_IMAGES_MAX_X;
         }
-
         else
         {
             lowerXBound = (short)(picCoordinants.x);
@@ -210,32 +201,30 @@ public static class GrabTile
             lowerYBound = VESTA_IMAGES_MAX_Y - 1;
             upperYBound = VESTA_IMAGES_MAX_Y;
         }
-
         else
         {
             upperYBound = (short)(picCoordinants.y + 1);
             lowerYBound = (short)(picCoordinants.y);
         }
 
-        for (short y = lowerYBound; y <= upperYBound; y++) //Iterate through each image row.
+        var images = new List<Texture2D>();
+
+        for (short y = upperYBound; y >= lowerYBound; y--) //Iterate through each image row.
         {
             for (short x = lowerXBound; x <= upperXBound; x++) //Iterate through each image column.
             {
-                image = new WWW(VESTA_IMAGES_URL.Replace("/4/0/0.png", string.Format("/4/{0}/{1}.png", y, x)));
+                image = new WWW(VESTA_IMAGES_URL.Replace("/6/0/0.png", string.Format("/6/{0}/{1}.png", y, x)));
                 while (!image.isDone) ;
-                vestaChunk = image.texture;
 
-                for (short j = 0; j < 256; j++) //Iterate through each pixel row.
-                {
-                    for (short i = 0; i < 256; i++) //Iterate through each pixel column.
-                        pixels[(y - lowerYBound) * NUM_PIXELS_SIDE * 256 + j * NUM_PIXELS_SIDE + (x - lowerXBound) * 256 + i]
-                                                                                = vestaChunk.GetPixel(i, j);
-                }
+                images.Add(image.texture);
             }
         }
 
-        Texture2D vesta = new Texture2D(NUM_PIXELS_SIDE, NUM_PIXELS_SIDE);
-        vesta.SetPixels(pixels);
+        Texture2D vesta = new Texture2D(image.texture.width * (int)Mathf.Sqrt(images.Count), image.texture.height * (int)Mathf.Sqrt(images.Count));
+        vesta.PackTextures(images.ToArray(), 0);
+
+        byte[] bytes = vesta.EncodeToPNG();
+        File.WriteAllBytes(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "/Vesta_SavedScreen.png", bytes);
 
         return vesta;
     }

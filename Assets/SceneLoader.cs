@@ -1,29 +1,18 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneLoader : MonoBehaviour {
-    public void NextScene()
-    {
-        SceneManager.LoadScene("Loading");
-        SceneManager.LoadScene("Scene");
-
-    }
-
+public class SceneLoader : MonoBehaviour
+{
     public void LoadMars()
     {
         PublicVariables.scenetoload = SceneToLoad.Mars;
         SceneManager.LoadScene("Loading");
-        SceneManager.LoadScene("Scene");
-        System.Threading.Thread.Sleep(1000);
-
     }
 
     public void LoadVesta()
     {
         PublicVariables.scenetoload = SceneToLoad.Vesta;
         SceneManager.LoadScene("Loading");
-        SceneManager.LoadScene("Scene");
-        System.Threading.Thread.Sleep(1000);
     }
 
     public void GoToSettings()

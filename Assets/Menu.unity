@@ -1256,7 +1256,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1741006457}
-        m_MethodName: NextScene
+        m_MethodName: LoadMars
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

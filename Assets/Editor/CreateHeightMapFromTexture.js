@@ -6,7 +6,6 @@ static function ApplyHeightmap () {
         EditorUtility.DisplayDialog("No texture selected", "Please select a texture.", "Cancel"); 
         return; 
     }
-    Undo.RegisterUndo (Terrain.activeTerrain.terrainData, "Heightmap From Texture");
  
     var terrain = Terrain.activeTerrain.terrainData;
     var w = heightmap.width;
