@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using System.Linq;
 
 public static class GrabTile
 {
@@ -140,7 +139,7 @@ public static class GrabTile
 
         if (picCoordinants.y == MARS_IMAGES_MAX_Y)
         {
-            lowerYBound = (int)(MARS_IMAGES_MAX_Y - squareLength);
+            lowerYBound = MARS_IMAGES_MAX_Y - squareLength;
             upperYBound = MARS_IMAGES_MAX_Y;
         }
         else
@@ -153,7 +152,7 @@ public static class GrabTile
         int width = 0;
         int height = 0;
 
-        for (int y = upperYBound; y >= lowerYBound; y--) //Iterate through each image row.
+        for (int y = lowerYBound; y <= upperYBound; y++) //Iterate through each image row.
         {
             for (int x = lowerXBound; x <= upperXBound; x++) //Iterate through each image column.
             {
@@ -166,14 +165,18 @@ public static class GrabTile
                 {
                     height = marsChunk.height;
                     width = marsChunk.width;
-                    pixels = new Color[((squareLength + 1) * marsChunk.width) * (marsChunk.height * (squareLength + 1))];
+                    pixels = new Color[((squareLength + 1) * width) * (height * (squareLength + 1))];
                 }
 
-                for (short j = 0; j < 256; j++) //Iterate through each pixel row.
+                for (short j = 0; j < marsChunk.height; j++) //Iterate through each pixel row.
                 {
-                    for (short i = 0; i < 256; i++) //Iterate through each pixel column.
-                        pixels[(y - lowerYBound) * ((squareLength + 1) * marsChunk.height) * marsChunk.height
-                            + j * ((squareLength + 1) * marsChunk.width) + (x - lowerXBound) * marsChunk.height + i] = marsChunk.GetPixel(i, (marsChunk.height - 1) - j);
+                    for (short i = 0; i < marsChunk.width; i++) //Iterate through each pixel column.
+                        //pixels[(y - lowerYBound) * ((squareLength + 1) * marsChunk.height) * marsChunk.height
+                        //+ j * ((squareLength + 1) * marsChunk.width) + (x - lowerXBound) * marsChunk.height + i] = marsChunk.GetPixel(i, (marsChunk.height - 1) - j);
+                        pixels[ (upperYBound - y) * (marsChunk.width * (squareLength + 1)) * marsChunk.height //Square Row
+                                + j * (marsChunk.width * (squareLength + 1)) //Picture pixel row
+                                + (x - lowerXBound) * marsChunk.width // Square column
+                                + i /* Picture pixel column */ ] = marsChunk.GetPixel(i, j); 
                 }
             }
         }
